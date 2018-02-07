@@ -1,0 +1,7 @@
+PKG_LIBS=~/Desktop/Simulacion-arborizaciones-basales/R-project/strneuron/lib/neurostr/libneurostr.a
+PKG_CPPFLAGS= -I ~/Desktop/Simulacion-arborizaciones-basales/R-project/strneuron/include -I /usr/include/eigen3 -I ~/Desktop/Simulacion-arborizaciones-basales/R-project/strneuron/include/spdlog -I ~/Desktop/Simulacion-arborizaciones-basales/R-project/strneuron/include/rapidjson
+PKG_CXXFLAGS=-std=c++14
+
+
+
+
