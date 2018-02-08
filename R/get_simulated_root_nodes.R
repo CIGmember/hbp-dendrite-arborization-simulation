@@ -4,11 +4,12 @@
 #' This function calls the simulator of a neuron
 #'
 #' This function calls thw simulator of a neuron
+#' @param Prototype_Neuron is a neuron object that acts as a template
 #' @return The nodes of the neuron as a list
 #' @example
 #' neuron_nodes <- get_simulated_root_nodes()
-get_simulated_root_nodes <- function(){
-  neuron <-get_simulated_neuron()
+get_simulated_root_nodes <- function(Prototype_Neuron){
+  neuron <-get_simulated_neuron(Prototype_Neuron)
   return(neuron$nodes)
 }
 
@@ -18,10 +19,11 @@ get_simulated_root_nodes <- function(){
 #'This function simulates a neuron. More specifically, it simulates the soma as a spherical radius, the number of dendrites and
 #'their placement in the soma as root nodes, and the first branch order of each dendrite.
 #'
+#' @param Prototype_Neuron is a neuron object that acts as a template
 #' @return a neuron object similar to those return by the neuro_converter function in neuroSTR
 #' @example
 #' neuron <- get_simulated_neuron()
-get_simulated_neuron <- function(){
+get_simulated_neuron <- function(Prototype_Neuron){
   neuron <-1
   #λ = 131, 51 y ν = 2, 93 for the ConwatMaxwellpoisson distribution
   N_root_nodes <- 1
@@ -42,7 +44,7 @@ get_simulated_neuron <- function(){
     root_nodes_position[[i+1]]<- (c(current_neur,0))
   }
 
-  sim_neur <- create_simulated_neuron(soma_radius,N_root_nodes,root_nodes_position)
+  sim_neur <- create_simulated_neuron(Prototype_Neuron,soma_radius,N_root_nodes,root_nodes_position)
   json_neur <- toJSON(sim_neur)
   id_root_nodes <- ((2*N_root_nodes+1): (3*N_root_nodes))
   neuron <- list(plain = json_neur,data = sim_neur,id_root_nodes = id_root_nodes)
@@ -57,12 +59,13 @@ get_simulated_neuron <- function(){
 #' @param soma_radius is a real valued quantity indicating the radius of the simulated soma
 #' @param N_root_nodes is an integer value that indicates the number of dendrites, currently in the interval [3,5].
 #' @param root_nodes_position is a list containing the coordinates of the root nodes of each dendrite in the soma
+#' @param Prototype_Neuron is a neuron object that acts as a template
 #'
 #' @return a neuron object similar to those return by the neuro_converter function in neuroSTR
-create_simulated_neuron<- function(soma_radius,N_root_nodes,root_nodes_position){
+create_simulated_neuron<- function(Prototype_Neuron,soma_radius,N_root_nodes,root_nodes_position){
 
   model_first_bif <- neurostr::model_first_bif
-  simulated_neuron <- Prototype_Neuron #Variable loaded in global environment
+  simulated_neuron <- Prototype_Neuron
   simulated_neuron$neurons$id<-"Simulated.DAT_1"
   simulated_neuron$neurons$soma$nodes[[1]]$id = 0
   simulated_neuron$neurons$soma$nodes[[1]]$x = 0

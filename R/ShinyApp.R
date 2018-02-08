@@ -17,6 +17,7 @@ ui<- fluidPage(
   textOutput(outputId = "Helper")
   ),
   mainPanel(
+
   #imageOutput(outputId = "neurV")
   htmlOutput(outputId = "neurV")
 )

@@ -2,17 +2,17 @@
 
 library(FNN)
 library(entropy)
-library(MASS)
-library(rbmn)
-library(pracma)
-library(compoisson)
-library(devtools)
-library(mvCircular)
-library(stats)
-library(spdep)
-library(jsonlite)
-library(data.table)
-library(FastKNN)
+#library(MASS)
+#library(rbmn)
+#library(pracma)
+#library(compoisson)
+#library(devtools)
+#library(mvCircular)
+#library(stats)
+#library(spdep)
+#library(jsonlite)
+#library(data.table)
+#library(FastKNN)
 
 simulate_neuron_2 <- function()
 {
@@ -39,9 +39,9 @@ if(models_retrained==0){
 
 
 
-
+  Prototype_Neuron<-neurostr::Prototype_Neuron
   #id_cut_nodes<-get_cut_nodes(neuron$plain)
-  neuron <- get_simulated_neuron()
+  neuron <- get_simulated_neuron(Prototype_Neuron)
   id_cut_nodes <- neuron[[3]]
 
 
