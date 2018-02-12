@@ -102,7 +102,7 @@ simulate_neuron_with_tortuosity <- function(seed=1)
 
 
 
-        write_2_JSON(neuron_2,"/home/pablo/Desktop/Simulacion-arborizaciones-basales/Experiments/newneuroneps02.json")
+
 
       }
       prev_simulation_data <- simulation_data
@@ -118,7 +118,7 @@ simulate_neuron_with_tortuosity <- function(seed=1)
       max_id_node=max(id_cut_nodes)
       neuron<-simulated_node_coordinates(neuron$plain, data.matrix(simulated_data), is_bifurcation,max_id_node)
 
-      write_2_JSON(neuron,"/home/pablo/Desktop/Simulacion-arborizaciones-basales/Experiments/newneuroneps602.json")
+
 
       id_cut_nodes<-neuron$ids
       print(id_cut_nodes)
