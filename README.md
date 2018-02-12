@@ -29,7 +29,8 @@ Installation instructions for package mvCircular (non-CRAN) can be found here:
 https://github.com/lrodriguezlujan/mvcircular
 
 
-##Use cases
+
+## Use cases
 
 ### Neuron simulation
 Using either the already trained models embbeded into the application or the resulting ones from retraining the model with the user's data, its possible to generate a number of simulated neurons as .json files in an specified directory.
@@ -47,5 +48,12 @@ Importantly, the eps parameter will be taken into account for the reading of the
 
 The right panel of the shinny app includes NeuroViewer, a 3D neuron visualizer that will allow the user to inspect visually all simulated representations as well as neuron reconstructed files compatible with neuroviewer.
 
-##Notes
+## Notes
 The GUI of the shinny application is not polished, so the user has to make sure the inputs are correct. For example, when introducing directories, we encourage the user to double check if they only contain neuron files and that the directory is a valid one. The results from testing output a report file in the directory of the simulated population of neurons. In order to use it again in the same session, this file should be removed from that directory.
+
+### Notes related on tortuosity simulation and eps parameter
+In its current state, the application cannot handle well full tortuosity, that is, an eps parameter of 0. It is possible to train the models, but the results are not intended as the final solution for tortuosity neuron's simulation. It is for now adviced to only use the eps value of 60.
+
+On the file "tortuosity.R",the user can find an alternative method, "simulate_neuron_5()" that includes a tortuosity simulation fully trained model (and while not commented, the methods that generate the dataset for trainning, train the model and simulate predictions are included) that generates neurons with tortuosity at eps value 0. It is advised to take the tortuosity simulations with caution. The recommended use is for a more "neuroscience-friendly" visualization of the final simulation.
+
+

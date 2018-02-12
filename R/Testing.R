@@ -115,8 +115,11 @@ Testing <- function(file_path_real,file_path_synthetic,eps){
   testing_data_nodes <- featured_data_nodes[testing_data_nodes,]
   nodes_predictions <- pred_BN_2(BN_nodes,testing_data_nodes)
   acc_nodes_predictions <- sum(abs(as.numeric(as.character(nodes_predictions$truth))== as.numeric(as.character(nodes_predictions$resp))))/length(nodes_predictions[[1]])#0.7076862
+
+
+ #Report
   report = data.table(KStwosampleNodes = p_values_ks_nodes, KLtwosampleNodes = p_values_kl_nodes, WilcoxtwosampleNodes = p_values_wil_nodes, AccuracyNodes = acc_nodes_predictions)
-  write.table(report, file=paste(final_path,"/report",sep=""))
+  write.matrix(report, file=paste(final_path,"/report",sep=""))
 
   return(report)
 

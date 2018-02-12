@@ -339,20 +339,32 @@ simulate_neo_tortosity <- function(tortosity_model,eps60pred,eps60datapoint,num_
         N_nodes_branch <- abs(N_nodes_branch)
       }
 
+
       if(N_nodes_branch >1){
 
-        N <- ceiling(N_nodes_branch)
-        length_distr <- rnorm(N,mean = generated_data[14] ,sd = abs(generated_data[15]))
-        angle_distr <- rnorm(N,mean = eps60datapoint$azimuth_angle[i], abs(generated_data[17]))
-        comp_length_distr <- rnorm(N,mean = eps60datapoint$elevation_angle[i], abs(generated_data[19]))#because negative values sometimes appear
+        N<-ceiling(N_nodes_branch/4+1)
+        #N <- 2*ceiling(log(N_nodes_branch)+1)
+        #N <- ceiling(log(N_nodes_branch)+1)
+        angle_distr <- rnorm(N,mean = eps60datapoint$azimuth_angle[i], abs(generated_data[17]))*0
+        comp_length_distr <- rnorm(N,mean = eps60datapoint$elevation_angle[i], abs(generated_data[19]))*0#because negative values sometimes appear
 
 
 #variables for knowledge extraction of the problem. TESTING
-        length_distr <- abs(length_distr)#provisional, proably wrong
-        angle_distr <- angle_distr*0
+      testing_env = 1
+      if(testing_env){
+        length_distr <- rnorm(N,mean = generated_data[14] ,sd = abs(generated_data[15]))
+        #angle_distr <- rnorm(N,mean = 0, sd = abs(generated_data[17]/5))
+        comp_length_distr <- rnorm(N,mean = pi/2, sd = abs(generated_data[19]/3))#
+        length_distr <- abs(length_distr)
+        #angle_distr <- angle_distr*0
         angle_distr[1]<-eps60datapoint$azimuth_angle[i]
-        comp_length_distr<- comp_length_distr*0+pi/2
-        comp_length_distr[1]<- eps60datapoint$elevation_angle[i]
+        comp_length_distr[1] <- pi/2
+        for(k in 2:N){
+          shift <- sum(angle_distr[2:N])
+          angle_distr[k] <- rnorm(1,mean = -shift,sd = abs(generated_data[17])/1)
+        }
+
+      }
 
 #END OF TESTING ENVIRONMENT
 
@@ -369,11 +381,15 @@ simulate_neo_tortosity <- function(tortosity_model,eps60pred,eps60datapoint,num_
           final_id <- ids[j]
           prev_model_2[j,] <- c(final_azimuth,final_elevation,final_length,final_id)
         }
+
+
         prev_model_final <- rbind(prev_model_final,prev_model_2)
       }
 
       else{
+        prev_model_2 <- prev_model[i,]
         prev_model_final <- rbind(prev_model_final,prev_model[i,])
+
       }
 
       list_prev_models <- append(list_prev_models,list(prev_model_2))
