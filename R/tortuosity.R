@@ -1,12 +1,11 @@
-##There seem to be some mistakes probably having to do with the models placing the predictions in incorrect fields in the dataframes,
-##i have to check that out, but at least now i know things are correct structurally.
+
 
 
 simulate_neuron_with_tortuosity <- function(seed=1)
 {
 
 
-  max_id_node=0; #Maximo id de los nodos que pertenecen a la neurona. Necesario para generar los nuevos ids de los nodos.
+  max_id_node=0;
   desc_model<-neurostr::desc_model
   simulation_model<-neurostr::simulation_model
   neo_tortosity_model <- neurostr::neo_tortosity_model
@@ -188,14 +187,13 @@ if(sum(descendants_c)>0){
 
 
 
-  simulation_tortosity <- c(cont_tort,bifs_tort)#maybe this fixes something, although i doubt is the real solution.
+  simulation_tortosity <- c(cont_tort,bifs_tort)
   simulation_tortosity[descendants_b]<-bifs_tort
   simulation_tortosity[descendants_c]<-cont_tort
 
 
 
 
-  #send to simulate the ones with 2s and the ones with 1s as 2, and the ones with 0s as 1. Fuck, the ones that say 1, they need to go in the other one...
 
 
 return(simulation_tortosity)
@@ -207,17 +205,15 @@ return(simulation_tortosity)
 tortosity_integration_neo <- function(neuron,simulation_data,simulated_tortosity,simulated_data,num_of_descendant,id_cut_nodes,max_id_node){
 
   initial_ids <- id_cut_nodes
-  #This may be corrected in the future, since we are overcomputing the cases with 0.
   filtering <- which(num_of_descendant==0)
   if(length(filtering)>0){
     initial_ids <- initial_ids[-filtering]
   }
 
 
-  #neuron$plain
+
   is_bifurcation<-c(rep(1,nrow(simulation_data[num_of_descendant==1])),rep(2,nrow(simulation_data[num_of_descendant==2])*2))-1
-  #neuron<-simulated_node_coordinates(neuron$plain, data.matrix(simulated_data), is_bifurcation,max_id_node)#this also needs reworking, as it needs to add known nodes to it and it assigns their ids, so i have to call it multiple times each time containing a known node
-  #id_cut_nodes<-neuron$ids
+
   final_ids <-c()
 
   final_ids_positions <-order(sapply(simulated_tortosity, function (x)  length(x[[1]])))
@@ -226,25 +222,18 @@ tortosity_integration_neo <- function(neuron,simulation_data,simulated_tortosity
   cont=1
   while(not_done){
 
-    #so the point here is to intrude card_ord with newly created data that comes from the retrained model. The only problem is that i need to address the case of num
-    #descendants=2, i have to see it in the code. En principio, el numero de ids y el datasetde tortosity integration already give me a perfect pattern for tortosity
-    #integration, i just have to "plug_in" the new values, rendering many of the previous computation useless, but if it works we would be satisfied.
 
 
-    #see what i need to fix here
     card_ord <- lapply(simulated_tortosity, function (x) x[cont,])
     card_ord <- rbindlist(card_ord)
-    #card_ord <- next_wide_output()
-    #is just neuron extract wirth the new ids
+
 
     if(cont >1){
       is_bifurcation <- c(rep(0,length(card_ord$desc_azimuth_angle)))
-      card_ord$id_parent <- id_cut_nodes#we still dont know what will happen later, and 100% if this is correct
+      card_ord$id_parent <- id_cut_nodes
       outs <- which(is.na(card_ord$desc_azimuth_angle))
 
-      #card_ord$desc_azimuth_angle <- simulation_continue$desc_azimuth
-      #card_ord$desc_elevation_angle <- simulation_continue$desc_elevation
-      #card_ord[,3] <- exp(simulation_continue[,3])
+
 
       if(length(outs)>0){
         final_ids <- append(final_ids,id_cut_nodes[outs])
@@ -258,21 +247,21 @@ tortosity_integration_neo <- function(neuron,simulation_data,simulated_tortosity
 
     }
     else{
-      card_ord$id_parent <- simulated_data$id_parent#risky but lets see
-      #first node incorrect, lets see what we do
+      card_ord$id_parent <- simulated_data$id_parent
+
     }
     max_id_node=max(id_cut_nodes)
 
-    #write_2_JSON(neuron,"/home/pablo/Desktop/Simulacion-arborizaciones-basales/Experiments/ongrowingneuron.json")
 
-    neuron<-simulated_node_coordinates(neuron$plain, data.matrix(card_ord), is_bifurcation,max_id_node)#this also needs reworking, as it needs to add known nodes to it and it assigns their ids, so i have to call it multiple times each time containing a known node
+
+    neuron<-simulated_node_coordinates(neuron$plain, data.matrix(card_ord), is_bifurcation,max_id_node)
     id_cut_nodes<-neuron$ids
     max_id_node=max(id_cut_nodes)
     cont <- cont + 1
 
   }
-  #neuron$ids <- final_ids[final_ids_positions]
-  neuron$ids <- final_ids[order(final_ids_positions,final_ids)] #FINALLY FOUND THE MISTAKE!!!!!!
+
+  neuron$ids <- final_ids[order(final_ids_positions,final_ids)]
 
 
   return(neuron)

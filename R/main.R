@@ -18,7 +18,7 @@ simulate_neuron_2 <- function()
 {
 
 
-max_id_node=0; #Maximo id de los nodos que pertenecen a la neurona. Necesario para generar los nuevos ids de los nodos.
+max_id_node=0;
 
 #set.seed(seed)
 #models_retrained is a global env variable modified in the shinny interface code
@@ -45,9 +45,7 @@ if(models_retrained==0){
   id_cut_nodes <- neuron[[3]]
 
 
-  ###Repetir hasta que la lista de nodos a crecer se encuentre vacía###
-  #####################################################################
-  #Aprender features para los nodos cortados
+
   t<-0
   while(length(id_cut_nodes)>0)
   {
@@ -57,10 +55,10 @@ if(models_retrained==0){
     selected_features$node_order[selected_features$node_order>4]<-4
     selected_features$node_order<-factor(selected_features$node_order,levels=0:4)
 
-    #Clasificar nodos cortados en terminal, continuar o bifurcar
+
     desc_probabilities<-pred_BN(desc_model,selected_features)
 
-    #Sampled number of descendant radonmly according to the probability of terminal, continue o bifurcation for each node
+
     num_of_descendant<-apply(desc_probabilities[,grep("prob",colnames(desc_probabilities))],1,function(x){sample(c(0,1,2),size=1,prob=x)})
 
     if(sum(num_of_descendant)> 42){#hard limit to avoid crazy growth in the model

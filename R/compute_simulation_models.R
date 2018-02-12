@@ -151,7 +151,7 @@ save(simulation_model_retrained,file = "./simulation_model_retrained.rda")
 
 #Experimental area, tortosity at work.
 compute_neo_tortosity_model <- function(node_branch_dataset_nt){
-  #desc_length is still logaritmical, i have to undo that.
+
 
 
   num_restart = 5
@@ -184,15 +184,13 @@ compute_neo_tortosity_model <- function(node_branch_dataset_nt){
 
   data<- node_branch_dataset_nt
   cp_data<-data[,which(colnames(data)!="node_num_descendant")]
-  #cp_data$node_order<-as.factor(as.numeric(as.character(cp_data$node_order)))
-  #cp_data$desc_longer<-as.factor(as.numeric(as.character(cp_data$desc_longer)))
-  #cp_data$dendrite_diameter<-as.factor(as.numeric(as.character(cp_data$dendrite_diameter)))
+
 
   continue_data<-cp_data[which(data$node_num_descendant!=2),]
   bifurcation_data<-cp_data[which(data$node_num_descendant==2),]
 
   first_desc<-c("desc_azimuth_angle","desc_elevation_angle","desc_length")
-  #second_desc<-c("desc_azimuth_angle2","desc_elevation_angle2","desc_length2")
+
 
   data_names<-colnames(cp_data)
   non_desc_var<-setdiff(data_names,c(first_desc,second_desc,"node_num_descendant","desc_longer"))#,"dendrite_diameter"))
@@ -221,18 +219,17 @@ compute_neo_tortosity_model <- function(node_branch_dataset_nt){
   return(neo_tortosity_model)
 
 }
-#newdataset but this time we pick the first node of the branch and using that as evidence we calculate the parameters of normal distributions to sample from
 node_branch_dataset_neotortosity <- function(nodes_data_eps_0,nodes_data_eps_60){
   data <- nodes_data_eps_0
   data60 <- nodes_data_eps_60
   data60$desc_length <- exp(data60$desc_length)
 
-  #oldcont = 1
+
   cont = 1
   col60 <- data60[,c(14,15)]
   col0 <- data[,c(14,15)]
 
-  #experimentation
+
   cont_branches = 1
   del_entries <- which(col60$node_num_descendant==1 & col60$node_order != 0)
   col602 <- col60[-del_entries,]
@@ -242,8 +239,7 @@ node_branch_dataset_neotortosity <- function(nodes_data_eps_0,nodes_data_eps_60)
   for(j in 1:length(data$node_num_descendant)){
     el60 <- col602[cont_branches,]
     el0 <- col0[j,]
-    #entrenar el modelo y aplicarlo naturalmente dentro de tortosity.
-    #hay que dejar esto listo ya, que falta por hacer todo lo que sigue del doctorado.
+
 
     if(el0$node_order ==0){
       tranch <- data[cont:j,]
@@ -283,16 +279,15 @@ node_branch_dataset_neotortosity <- function(nodes_data_eps_0,nodes_data_eps_60)
 
   branch_node_tort_rel <- data.frame(matrix(rep(1:ln_1*0,N60),nrow=N60,ncol=ln_1))
 
-  #branch_node_tort_rel[1:N60,1:D60] <- data60
+
 
 
   names(branch_node_tort_rel) <- n_1
 
-  #data_child <- data.frame(length.sigma = 0,length.mean=0,n_nodes=0,total_length=0,azimuth.sigma=0, azimuth.mean=0,)#los campos del punto inicial
-  #tambien vamos a calcular el punto final?
+
 
   for(i in 1:N60){
-    #punto inicial aqui
+
     el<-branches_separation[[i]]
     target_azimuth <-el$desc_azimuth_angle
     target_elevation <- el$desc_elevation_angle
@@ -302,7 +297,7 @@ node_branch_dataset_neotortosity <- function(nodes_data_eps_0,nodes_data_eps_60)
     fit_elevation <- fitdistr(target_elevation,densfun="normal")
     fit_length <- fitdistr(target_length,densfun = "normal")
     N_nodes <- length(el[,1])
-    #Node_order <- el$node_order
+
     el21<- c("N_nodes" = N_nodes,"length.mean" = fit_length$estimate[1], "length.sigma"=fit_length$estimate[2],"azimuth.mean"=fit_azimuth$estimate[1],"azimuth.sigma"=fit_azimuth$estimate[2],"elevation.mean"=fit_elevation$estimate[1],"elevation.sigma"=fit_elevation$estimate[2])
     branch_node_tort_rel[i,] <- el21
   }
@@ -318,12 +313,12 @@ node_branch_dataset_neotortosity_2 <- function(nodes_data_eps_0,nodes_data_eps_6
   data60 <- nodes_data_eps_60
   data60$desc_length <- exp(data60$desc_length)
 
-  #oldcont = 1
+
   cont = 1
   col60 <- data60[,c(14,15)]
   col0 <- data[,c(14,15)]
 
-  #experimentation
+
   cont_branches = 1
   del_entries <- which(col60$node_num_descendant==1 & col60$node_order != 0)
   col602 <- col60[-del_entries,]
@@ -333,8 +328,7 @@ node_branch_dataset_neotortosity_2 <- function(nodes_data_eps_0,nodes_data_eps_6
   for(j in 1:length(data$node_num_descendant)){
     el60 <- col602[cont_branches,]
     el0 <- col0[j,]
-    #entrenar el modelo y aplicarlo naturalmente dentro de tortosity.
-    #hay que dejar esto listo ya, que falta por hacer todo lo que sigue del doctorado.
+
 
     if(el0$node_order ==0){
       tranch <- data[cont:j,]
@@ -374,16 +368,15 @@ node_branch_dataset_neotortosity_2 <- function(nodes_data_eps_0,nodes_data_eps_6
 
   branch_node_tort_rel <- data.frame(matrix(rep(1:ln_1*0,N60),nrow=N60,ncol=ln_1))
 
-  #branch_node_tort_rel[1:N60,1:D60] <- data60
+
 
 
   names(branch_node_tort_rel) <- n_1
 
-  #data_child <- data.frame(length.sigma = 0,length.mean=0,n_nodes=0,total_length=0,azimuth.sigma=0, azimuth.mean=0,)#los campos del punto inicial
-  #tambien vamos a calcular el punto final?
+
 
   for(i in 1:N60){
-    #punto inicial aqui
+
     el<-branches_separation[[i]]
     target_azimuth <-el$desc_azimuth_angle
     target_elevation <- el$desc_elevation_angle
@@ -393,7 +386,7 @@ node_branch_dataset_neotortosity_2 <- function(nodes_data_eps_0,nodes_data_eps_6
     fit_elevation <- fitdistr(target_elevation,densfun="normal")
     fit_length <- fitdistr(target_length,densfun = "normal")
     N_nodes <- length(el[,1])
-    #Node_order <- el$node_order
+
     el21<- c("N_nodes" = N_nodes,"length.mean" = fit_length$estimate[1], "length.sigma"=fit_length$estimate[2],"azimuth.mean"=fit_azimuth$estimate[1],"azimuth.sigma"=fit_azimuth$estimate[2],"elevation.mean"=fit_elevation$estimate[1],"elevation.sigma"=fit_elevation$estimate[2])
     branch_node_tort_rel[i,] <- el21
   }
